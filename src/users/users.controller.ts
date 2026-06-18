@@ -21,7 +21,7 @@ export class UsersController {
   const user = await this.usersService.findByEmail(email);
 
   if (!user) {
-    throw new NotFoundException(`Korisnik sa email-om '${email}' nije pronađen.`);
+    throw new NotFoundException("User not found");
   }
   return UserResponseDto.fromEntity(user);
   }

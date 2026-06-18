@@ -23,7 +23,9 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+**Expense Tracker** is a RESTful API application built with the [Nest](https://github.com/nestjs/nest) framework. It includes user authentication and user management features to serve as the backend for tracking personal expenses.
+
+**Note:** This project is used for learning the Nest.js framework.
 
 ## Project setup
 
