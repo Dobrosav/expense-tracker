@@ -58,4 +58,40 @@ describe('UsersService', () => {
       await expect(service.create('test@test.com', 'password')).rejects.toThrow(ConflictException);
     });
   });
+
+  describe('findByEmail', () => {
+    it('should return a user if found by email', async () => {
+      const user = { id: 1, email: 'test@test.com' };
+      mockUserRepository.findOne.mockResolvedValue(user);
+
+      const result = await service.findByEmail('test@test.com');
+      expect(mockUserRepository.findOne).toHaveBeenCalledWith({ where: { email: 'test@test.com' } });
+      expect(result).toEqual(user);
+    });
+
+    it('should return null if user not found by email', async () => {
+      mockUserRepository.findOne.mockResolvedValue(null);
+
+      const result = await service.findByEmail('notfound@test.com');
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('findById', () => {
+    it('should return a user if found by id', async () => {
+      const user = { id: 1, email: 'test@test.com' };
+      mockUserRepository.findOne.mockResolvedValue(user);
+
+      const result = await service.findById(1);
+      expect(mockUserRepository.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
+      expect(result).toEqual(user);
+    });
+
+    it('should return null if user not found by id', async () => {
+      mockUserRepository.findOne.mockResolvedValue(null);
+
+      const result = await service.findById(999);
+      expect(result).toBeNull();
+    });
+  });
 });
