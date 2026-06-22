@@ -30,9 +30,15 @@ describe('AuthController', () => {
   describe('login', () => {
     it('should return access token', async () => {
       mockAuthService.login.mockResolvedValue({ access_token: 'test-token' });
-      const result = await controller.login({ email: 'test@test.com', password: 'password' });
+      const result = await controller.login({
+        email: 'test@test.com',
+        password: 'password',
+      });
       expect(result).toEqual({ access_token: 'test-token' });
-      expect(mockAuthService.login).toHaveBeenCalledWith('test@test.com', 'password');
+      expect(mockAuthService.login).toHaveBeenCalledWith(
+        'test@test.com',
+        'password',
+      );
     });
   });
 });

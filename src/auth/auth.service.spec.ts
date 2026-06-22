@@ -13,7 +13,7 @@ describe('AuthService', () => {
   const mockUsersService = {
     findByEmail: jest.fn(),
   };
-  
+
   const mockJwtService = {
     sign: jest.fn(),
   };
@@ -46,7 +46,11 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('should return access token if credentials are valid', async () => {
-      const user = { id: 1, email: 'test@test.com', password: 'hashedPassword' };
+      const user = {
+        id: 1,
+        email: 'test@test.com',
+        password: 'hashedPassword',
+      };
       mockUsersService.findByEmail.mockResolvedValue(user);
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
       mockJwtService.sign.mockReturnValue('test-token');
@@ -57,15 +61,23 @@ describe('AuthService', () => {
 
     it('should throw UnauthorizedException if user not found', async () => {
       mockUsersService.findByEmail.mockResolvedValue(null);
-      await expect(service.login('test@test.com', 'password')).rejects.toThrow(UnauthorizedException);
+      await expect(service.login('test@test.com', 'password')).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
 
     it('should throw UnauthorizedException if password does not match', async () => {
-      const user = { id: 1, email: 'test@test.com', password: 'hashedPassword' };
+      const user = {
+        id: 1,
+        email: 'test@test.com',
+        password: 'hashedPassword',
+      };
       mockUsersService.findByEmail.mockResolvedValue(user);
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
-      
-      await expect(service.login('test@test.com', 'wrongpassword')).rejects.toThrow(UnauthorizedException);
+
+      await expect(
+        service.login('test@test.com', 'wrongpassword'),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 });
