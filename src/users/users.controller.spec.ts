@@ -66,7 +66,9 @@ describe('UsersController', () => {
 
     it('should throw NotFoundException if not found', async () => {
       mockUsersService.findByEmail.mockResolvedValue(null);
-      await expect(controller.findByEmail('notfound@test.com')).rejects.toThrow(NotFoundException);
+      await expect(controller.findByEmail('notfound@test.com')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -86,7 +88,9 @@ describe('UsersController', () => {
       mockUsersService.findById.mockResolvedValue(null);
 
       const mockReq = { user: { sub: 999 } };
-      await expect(controller.getMyProfile(mockReq as any)).rejects.toThrow(NotFoundException);
+      await expect(controller.getMyProfile(mockReq as any)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });
