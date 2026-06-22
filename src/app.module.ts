@@ -16,7 +16,7 @@ import { ExpensesModule } from './expenses/expenses.module';
       username: 'dobri',
       password: 'root1234',
       database: 'expense_tracker',
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      autoLoadEntities: true,
       synchronize: true,
     }),
     UsersModule,
