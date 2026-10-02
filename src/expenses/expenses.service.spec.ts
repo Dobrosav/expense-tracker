@@ -7,12 +7,23 @@ import { NotFoundException } from '@nestjs/common';
 describe('ExpensesService', () => {
   let service: ExpensesService;
 
+  const mockQueryBuilder = {
+    innerJoin: jest.fn().mockReturnThis(),
+    select: jest.fn().mockReturnThis(),
+    addSelect: jest.fn().mockReturnThis(),
+    where: jest.fn().mockReturnThis(),
+    groupBy: jest.fn().mockReturnThis(),
+    getRawMany: jest.fn(),
+    getRawOne: jest.fn(),
+  };
+
   const mockExpenseRepository = {
     create: jest.fn(),
     save: jest.fn(),
     find: jest.fn(),
     findOne: jest.fn(),
     delete: jest.fn(),
+    createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder),
   };
 
   beforeEach(async () => {
@@ -141,6 +152,29 @@ describe('ExpensesService', () => {
       mockExpenseRepository.findOne.mockResolvedValue(null);
 
       await expect(service.remove(1, 1)).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('getDashboardSummary', () => {
+    it('should return dashboard summary for a user', async () => {
+      const mockFeeSummary = [{ categoryName: 'Hrana', total: '150.50' }];
+      const mockTotalExpenses = { total: '150.50' };
+
+      mockQueryBuilder.getRawMany.mockResolvedValue(mockFeeSummary);
+      mockQueryBuilder.getRawOne.mockResolvedValue(mockTotalExpenses);
+
+      const result = await service.getDashboardSummary(1);
+
+      expect(mockExpenseRepository.createQueryBuilder).toHaveBeenCalledWith('expense');
+      expect(result).toEqual({
+        total_spent: 150.5,
+        fee_by_category: [
+          {
+            category_name: 'Hrana',
+            total: 150.5,
+          },
+        ],
+      });
     });
   });
 });
