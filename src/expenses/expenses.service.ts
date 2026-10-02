@@ -11,7 +11,7 @@ export class ExpensesService {
   constructor(
     @InjectRepository(Expense)
     private expenseRepository: Repository<Expense>,
-  ) {}
+  ) { }
 
   async create(createExpenseDto: CreateExpenseDto, userId: number) {
     this.logger.log(`Creating expense for user ${userId}`);
@@ -71,5 +71,29 @@ export class ExpensesService {
     }
     this.logger.log('Deleting expense with id' + id);
     return await this.expenseRepository.delete(id);
+  }
+
+  async getDashboardSummary(userId: number) {
+    this.logger.log(`Fetching dashboard summary for user ${userId}`);
+    const feeSummaryByCategory = await this.expenseRepository.createQueryBuilder('expense')
+      .innerJoin('expense.category', 'category')
+      .select('category.name', 'categoryName')
+      .addSelect('SUM(expense.amount)', 'total')
+      .where('expense.userId = :userId', { userId })
+      .groupBy('category.id').getRawMany();
+
+    const totalExpenses = await this.expenseRepository
+      .createQueryBuilder('expense')
+      .select('SUM(expense.amount)', 'total')
+      .where('expense.userId = :userId', { userId })
+      .getRawOne();
+
+    return {
+      total_spent: parseFloat(totalExpenses?.total || '0'),
+      fee_by_category: feeSummaryByCategory.map((item) => ({
+        category_name: item.categoryName,
+        total: parseFloat(item.total),
+      }))
+    }
   }
 }

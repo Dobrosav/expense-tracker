@@ -35,6 +35,12 @@ export class ExpensesController {
     return expenses.map(ExpenseResponseDto.fromEntity);
   }
 
+  @Get('dashboard-summary')
+  async getDashboardSummary(@Req() req: any) {
+    const userId = req.user.sub;
+    return this.expensesService.getDashboardSummary(userId);
+  }
+
   @Get(':id')
   async findOneByUserId(@Param('id') id: string, @Req() req: any) {
     const userId = req.user.sub;
